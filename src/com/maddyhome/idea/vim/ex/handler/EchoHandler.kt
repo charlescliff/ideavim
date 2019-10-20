@@ -20,22 +20,28 @@ package com.maddyhome.idea.vim.ex.handler
 
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.editor.Editor
-import com.maddyhome.idea.vim.ex.*
-import com.maddyhome.idea.vim.ex.vimscript.VimScriptGlobalEnvironment
-import com.maddyhome.idea.vim.ex.vimscript.VimScriptParser
+import com.intellij.psi.PsiElement
+import com.maddyhome.idea.vim.ex.CommandHandler
+import com.maddyhome.idea.vim.ex.ExOutputModel
+import com.maddyhome.idea.vim.ex.commands
+import com.maddyhome.idea.vim.ex.flags
+import dev.feedforward.vim.lang.psi.VimEchoCommand
+import dev.feedforward.vim.lang.psi.VimLiteralExpr
 
 /**
  * @author vlan
  */
-class EchoHandler : CommandHandler.SingleExecution() {
+class EchoHandler : CommandHandler.PsiExecution() {
   override val names = commands("ec[ho]")
-  override val argFlags = flags(RangeFlag.RANGE_FORBIDDEN, ArgumentFlag.ARGUMENT_OPTIONAL, Access.READ_ONLY)
+  override val argFlags = flags(RangeFlag.RANGE_FORBIDDEN, CommandHandler.ArgumentFlag.ARGUMENT_OPTIONAL, Access.READ_ONLY)
 
-  override fun execute(editor: Editor, context: DataContext, cmd: ExCommand): Boolean {
-    val env = VimScriptGlobalEnvironment.getInstance()
-    val globals = env.variables
-    val value = VimScriptParser.evaluate(cmd.argument, globals)
-    val text = VimScriptParser.expressionToString(value) + "\n"
+  override fun execute(editor: Editor, context: DataContext, cmd: PsiElement): Boolean {
+    val vimCommand = cmd as? VimEchoCommand ?: return false
+
+    val expressions = vimCommand.exprList
+    val text = expressions.joinToString(" ", postfix = "\n") {
+      (it as? VimLiteralExpr)?.stringLiteral?.text ?: "ERROR"
+    }
     ExOutputModel.getInstance(editor).output(text)
     return true
   }

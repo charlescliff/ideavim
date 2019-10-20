@@ -74,6 +74,9 @@
     <applicationService serviceImplementation="com.maddyhome.idea.vim.group.NotificationService"/>
 
     <statusBarWidgetProvider implementation="com.maddyhome.idea.vim.StatusBarIconProvider"/>
+
+    <fileType name="Vim file" implementationClass="dev.feedforward.vim.lang.VimFileType" fieldName="INSTANCE" language="VimL" extensions="vim"/>
+    <lang.parserDefinition language="VimL" implementationClass="dev.feedforward.vim.lang.VimParserDefinition"/>
   </extensions>
 
   <extensions defaultExtensionNs="IdeaVIM">

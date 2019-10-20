@@ -52,11 +52,13 @@ intellij {
 
 repositories {
   mavenCentral()
+  mavenLocal()
 }
 
 dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
   compile "org.jetbrains:annotations:17.0.0"
+  compile "dev.feedforward:VimLanguage:0.0.1"
 }
 
 compileKotlin {
