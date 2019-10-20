@@ -20,14 +20,19 @@ package com.maddyhome.idea.vim.ex.handler
 
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
 import com.maddyhome.idea.vim.VimPlugin
-import com.maddyhome.idea.vim.ex.*
+import com.maddyhome.idea.vim.ex.CommandHandler
+import com.maddyhome.idea.vim.ex.CommandHandlerFlags
+import com.maddyhome.idea.vim.ex.CommandName
+import com.maddyhome.idea.vim.ex.commands
+import com.maddyhome.idea.vim.ex.flags
 
-class AsciiHandler : CommandHandler.SingleExecution() {
+class AsciiHandler : CommandHandler.PsiExecution() {
   override val names: Array<CommandName> = commands("as[cii]")
   override val argFlags: CommandHandlerFlags = flags(RangeFlag.RANGE_FORBIDDEN, ArgumentFlag.ARGUMENT_FORBIDDEN, Access.READ_ONLY)
 
-  override fun execute(editor: Editor, context: DataContext, cmd: ExCommand): Boolean {
+  override fun execute(editor: Editor, context: DataContext, cmd: PsiElement): Boolean {
     VimPlugin.getFile().displayAsciiInfo(editor)
     return true
   }
